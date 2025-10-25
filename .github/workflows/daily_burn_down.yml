@@ -29,4 +29,4 @@ jobs:
           echo "BOARD_ID=${{ secrets.BOARD_ID }}" >> .env
 
       - name: Run burn down script
-        run: python main.py
+        run: BurnDownChart.py
