@@ -20,6 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install requests python-dotenv matplotlib
 
       - name: Create .env file from secrets
@@ -28,5 +29,11 @@ jobs:
           echo "TOKEN=${{ secrets.TOKEN }}" >> .env
           echo "BOARD_ID=${{ secrets.BOARD_ID }}" >> .env
 
+      - name: Confirm repo contents
+        run: |
+          echo "Current directory:" && pwd
+          echo "Files:" && ls -la
+
       - name: Run burn down script
-        run: python BurnDownChart.py
+        working-directory: ${{ github.workspace }}
+        run: python ./BurnDownChart.py
