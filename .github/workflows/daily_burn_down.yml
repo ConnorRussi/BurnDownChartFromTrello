@@ -1,0 +1,32 @@
+name: Daily Trello Burn Down
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # ⏰ Runs every day at 00:00 UTC
+  workflow_dispatch:       # 🖱️ Allows you to trigger manually in GitHub
+
+jobs:
+  run-burn-down:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests python-dotenv matplotlib
+
+      - name: Create .env file from secrets
+        run: |
+          echo "API_KEY=${{ secrets.API_KEY }}" >> .env
+          echo "TOKEN=${{ secrets.TOKEN }}" >> .env
+          echo "BOARD_ID=${{ secrets.BOARD_ID }}" >> .env
+
+      - name: Run burn down script
+        run: python main.py
