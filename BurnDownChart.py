@@ -121,13 +121,15 @@ def ClearData():
     return 0
 
 
-if len(sys.argv) > 1 and sys.argv[1] == "-clear":
+if len(sys.argv) > 1 and sys.argv.__contains__("-clear"):
     if(ClearData() == 0):
         print("Data cleared.")
         sys.exit()
 
 LoadDataFromFile()
 CollectData()
-ShowDataGraph()
 SaveDataToFile()
+
+if len(sys.argv) > 1 and sys.argv.__contains__("-graph"):
+    ShowDataGraph()
 
