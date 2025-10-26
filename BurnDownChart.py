@@ -1,4 +1,3 @@
-
 import requests
 import json
 from datetime import datetime, timedelta
@@ -42,7 +41,14 @@ def CollectData():
             response = requests.get(url)
             cards_List = response.json()
             for cards in cards_List:
-                cardsLeftToDo += 1
+                label_sum = 0
+                for label in cards.get("labels", []):
+                    # Try to parse label name as a number
+                    try:
+                        label_sum += float(label["name"])
+                    except (ValueError, KeyError):
+                        continue
+                cardsLeftToDo += label_sum
     #             print(cards["name"], cards["id"])
     #         print("*****************")
     # print("Total Cards Left To Do:", cardsLeftToDo)
