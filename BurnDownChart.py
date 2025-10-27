@@ -20,7 +20,7 @@ def CollectData():
     global cardsLeftToDo
     global startDate
     #test
-    allowedLists = ["Sprint 1 Backlog", "Tyler", "Vincent", "Connor", "Avi", "Ethan"]
+    # Only count lists whose name starts with 'sp '
     url = f"https://api.trello.com/1/boards/{BOARD_ID}/lists?key={API_KEY}&token={TOKEN}"
     response = requests.get(url)
     # print("Status code:", response.status_code)
@@ -32,10 +32,9 @@ def CollectData():
     lists = response.json()
     accepted_Lists = []
     for lst in lists:
-        # print(lst["name"] + "is in allowed lists is " +  (lst["name"] in allowedLists).__str__())
-        if(lst["name"] in allowedLists):
+        # Check if list name starts with 'sp ' (case-insensitive)
+        if lst["name"].lower().startswith("sp "):
             accepted_Lists.append(lst)
-            # print(lst["name"], " List ID:", accepted_Lists[-1]["id"])
             LIST_ID = lst["id"]
             url = f"https://api.trello.com/1/lists/{LIST_ID}/cards?key={API_KEY}&token={TOKEN}"
             response = requests.get(url)
@@ -43,9 +42,8 @@ def CollectData():
             for cards in cards_List:
                 label_sum = 0
                 for label in cards.get("labels", []):
-                    # Try to parse label name as a number
                     try:
-                        label_sum += float(label["name"])
+                        label_sum += int(label["name"])
                     except (ValueError, KeyError):
                         continue
                 cardsLeftToDo += label_sum

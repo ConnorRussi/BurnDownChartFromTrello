@@ -1,0 +1,110 @@
+Set up program to run on webserver
+Install Node.js (1 hr)
+Initialize project with npm init (1 hr)
+Set up Express.js server (2 hrs)
+Configure server to auto-restart using nodemon (1 hr)
+Connect React frontend to backend with a test API call (4 hrs)
+Set up environment variables (.env) (1 hr)
+Configure deployment on Render, Railway, or XAMPP (4 hrs)
+
+
+Set up Node.js
+Create main server.js file (1 hr)
+Add route handlers for basic API endpoints (2 hrs)
+Test endpoints using Postman (1 hr)
+Add error handling and logging (4 hrs)
+Connect with React
+Set up React app with create-react-app (1 hr)
+Connect to Node.js backend with axios (2 hrs)
+Create basic API test component (1 hr)
+Verify data flow between backend and frontend (1 hr)
+Create Cashier View
+Convert Java backend to JavaScript (8 hrs)
+Build cashier UI with React components (4 hrs)
+Implement individual item removal button (2 hrs)
+Create back button (1 hr)
+Connect to backend for order updates (4 hrs)
+Set up Manager Overrides
+Implement Google Auth or password check (4 hrs)
+Create Manager View
+Create buttons for reports, overrides, and inventory (2 hrs)
+Implement report screens (4 hrs)
+Implement inventory view and item removal (4 hrs)
+Rewrite Backend to Work with New Front-End Setup
+Refactor routes for new API structure (4 hrs)
+Update all fetch calls to align with new endpoints (2 hrs)
+Add detailed documentation for endpoints (2 hrs)
+Test endpoints thoroughly with Postman (2 hrs)
+Optimize and refactor to add modularity (2 hrs)
+Create Kitchen View
+Design kitchen screen layout (2 hrs)
+Display current orders from backend (4 hrs)
+Implement the mark as finished button (2 hrs)
+Remove finished orders (2 hrs)
+Add manual remove button (1 hr)
+Display orders based on progress (4 hrs)
+Add button to swap between kitchen and cashier view (2 hrs)
+Create Customer View
+Design customer-facing layout (2 hrs)
+Implement layout with React components (4 hrs)
+Add item images and details (4 hrs)
+Create rewards program button and modal (2 hrs)
+Display customer order progress (4 hrs)
+Implement coupon code validation (4 hrs)
+Add speech-to-text ordering (8 hrs)
+Add text-to-speech accessibility option (4 hrs)
+Integrate Google Translate for multilingual support (4 hrs)
+Integrate Weather API for local weather display (2 hrs)
+Create Menu View
+Design modular, generatable menu layout (4 hrs)
+Create menu React component (4 hrs)
+Connect menu to database API (4 hrs)
+Implement daily update function (2 hrs)
+Add search and filter options (2 hrs)
+Style menu with CSS (2 hrs)
+Integrate Google Translate
+Connect Google Translate API to UI text elements (4 hrs)
+Ensure compatibility across all views (2 hrs)
+Test for multilingual rendering accuracy (1 hr)
+
+
+Integrate Weather API
+Connect to open weather API (2 hrs)
+Display temperature and conditions in customer view (1 hr)
+Refresh weather data periodically (1 hr)
+Integrate Google Auth
+Set up Google OAuth credentials (1 hr)
+Implement employee sign-in (4 hrs)
+Implement customer sign-in (4 hrs)
+Add logout functionality (1 hr)
+Secure API routes with middleware (4 hrs)
+Integrate AI API into System
+Research and select an AI API (1 hr)
+Create backend route for suggested orders (4 hrs)
+Connect suggestions to cashier and customer screens (4 hrs)
+Integrate with speech-to-text for accessibility (4 hrs)
+Text-to-Speech Accessibility
+Implement toggle in settings menu (2 hrs)
+Add voice output for selected items (4 hrs)
+Test with various UI screens (2 hrs)
+Database Integration
+Connect Node.js to PostgreSQL database (2 hrs)
+Create table for rewards customers (1 hrs)
+Write CRUD operations for all tables (4 hrs)
+Add test seed data (1 hr)
+Reports and Data
+Design report schema for sales data (2 hrs)
+Implement daily sales summary endpoint (4 hrs)
+Create report display in manager view (4 hrs)
+Add filters by date and employee (2 hrs)
+AI and Accessibility Integration
+Research accessibility APIs (1 hr)
+Test both text-to-speech and speech-to-text (4 hrs)
+
+
+Miscellaneous and Polish
+Make layout responsive for all devices (4 hrs)
+Add loading indicators and animations (2 hrs)
+Conduct usability testing (4 hrs)
+Fix bugs based on testing feedback (8 hrs)
+Final integration testing and cleanup (4 hrs)
