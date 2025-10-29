@@ -37,3 +37,10 @@ jobs:
       - name: Run burn down script
         working-directory: ${{ github.workspace }}
         run: python ./BurnDownChart.py
+      - name: Commit and push updated data file
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add "Long Term.txt"
+          git commit -m "📈 Update Long Term.txt data ($(date))" || echo "No changes to commit"
+          git push
