@@ -102,14 +102,19 @@ def ShowDataGraph():
         except ValueError:
             print(f"Skipping invalid date: {dateStr}")
 
+    # Recommended line: true straight line from first day (start value) to last day (zero)
     plt.figure(figsize=(10, 5))
-    plt.plot(dates, cardsLeft, marker='o')
+    plt.plot(dates, cardsLeft, marker='o', label='Actual')
+    if len(dates) > 1:
+        total_items = cardsLeft[0]
+        plt.plot([dates[0], dates[-1]], [total_items, 0], linestyle='--', color='red', label='Recommended')
     plt.xlabel('Date')
     plt.ylabel('Cards Left to Do')
     plt.title('Burn Down Chart')
     plt.grid(True)
     plt.xticks(rotation=45)
     plt.ylim(0, max(cardsLeft) + 2)
+    plt.legend()
     plt.tight_layout()
     plt.show()
 
