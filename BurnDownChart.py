@@ -208,7 +208,7 @@ def LoadDataFromFile():
 
 
 
-def ShowDataGraph():
+def ShowDataGraph(end_date=None):
     import matplotlib.pyplot as plt
 
     dates = []
@@ -221,12 +221,24 @@ def ShowDataGraph():
         except ValueError:
             print(f"Skipping invalid date: {dateStr}")
 
-    # Recommended line: true straight line from first day (start value) to last day (zero)
+    if not dates:
+        print('No data to plot')
+        return
+
+    # Recommended line: true straight line from first day (start value) to a fixed end date
     plt.figure(figsize=(10, 5))
     plt.plot(dates, cardsLeft, marker='o', label='Actual')
     if len(dates) > 1:
         total_items = cardsLeft[0]
-        plt.plot([dates[0], dates[-1]], [total_items, 0], linestyle='--', color='red', label='Recommended')
+        # fixed recommended target date
+        end_date = datetime(2025, 11, 21)
+        # draw recommended line to end_date:
+        plt.plot([dates[0], end_date], [total_items, 0], linestyle='--', color='red', label='Recommended')
+        try:
+            plt.xlim(dates[0], end_date)
+        except Exception:
+            pass
+
     plt.xlabel('Date')
     plt.ylabel('Cards Left to Do')
     plt.title('Burn Down Chart')
