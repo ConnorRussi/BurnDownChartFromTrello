@@ -130,50 +130,7 @@ def CollectData():
     currentDate = datetime.now()
     graphMap[currentDate.strftime("%Y-%m-%d")] = cardsLeftToDo
 
-    # Also update product backlog file: compute product sum and build product series
-    try:
-        product_sum = _fetch_product_label_sum(BOARD_ID)
-        if product_sum is None:
-            print("Skipping product update due to fetch error.")
-            return
 
-        # choose sprint file: prefer Print1 BurnDownChart.txt if present else Sprint1 BurnDownChart
-        preferred = "Print1 BurnDownChart.txt"
-        sprint_path = preferred if os.path.exists(preferred) else "Sprint1 BurnDownChart"
-        sprint_entries, sprint_start = _read_sprint_file(sprint_path)
-
-        if not sprint_entries:
-            print("No sprint entries found; skipping product file update.")
-            return
-
-        # Build product backlog over time: start = product_sum + sprint_start, then subtract sprint daily deltas
-        dates = [d for d, v in sprint_entries]
-        values = [v for d, v in sprint_entries]
-        sprint_start_val = values[0]
-        product_current = product_sum + sprint_start_val
-        product_entries = []
-        product_entries.append((dates[0], product_current))
-        for i in range(1, len(values)):
-            prev = values[i-1]
-            curr = values[i]
-            delta = prev - curr
-            product_current = product_current - delta
-            product_entries.append((dates[i], product_current))
-        # extend product entries up to today if needed (fill missing days with current value)
-        try:
-            last_date = datetime.strptime(product_entries[-1][0], '%Y-%m-%d').date()
-            today = datetime.now().date()
-            next_day = last_date + timedelta(days=1)
-            while next_day <= today:
-                product_entries.append((next_day.strftime('%Y-%m-%d'), product_current))
-                next_day = next_day + timedelta(days=1)
-        except Exception:
-            pass
-
-        _write_product_file(productData + ".txt", product_entries, sprint_start)
-        print(f"Updated {productData}.txt with {len(product_entries)} entries")
-    except Exception as e:
-        print("Error updating product backlog:", e)
 
 
 
@@ -296,6 +253,109 @@ def ShowProductGraph():
     plt.tight_layout()
     plt.show()
 
+def UpdateProductInfoFromLongTerm():
+    """
+    Updates ProductInfo.txt based on total sprint changes in Long Term.txt
+    Formula: new_product_value = original_product_value - (sprint_start_value - current_sprint_value)
+    """
+    try:
+        # Read Long Term.txt data
+        lt_entries, lt_start = _read_sprint_file("Long Term.txt")
+        if not lt_entries or not lt_start:
+            print("No data in Long Term.txt or no start date found")
+            return
+
+        # Read existing ProductInfo.txt
+        prod_entries, prod_start = _read_sprint_file(productData + ".txt")
+        
+        # Convert to dictionaries for easier lookup
+        lt_dict = {date_str: value for date_str, value in lt_entries}
+        prod_dict = {date_str: value for date_str, value in prod_entries}
+        
+        print(f"Long Term start date: {lt_start}")
+        print(f"Product Info start date: {prod_start}")
+        
+        # Get the sprint start value from Long Term.txt
+        if lt_start not in lt_dict:
+            print(f"Start date {lt_start} not found in Long Term data")
+            return
+        
+        sprint_start_value = lt_dict[lt_start]
+        print(f"Sprint start value: {sprint_start_value}")
+        
+        # Get the original product value for the start date
+        if lt_start not in prod_dict:
+            print(f"Start date {lt_start} not found in Product Info")
+            return
+        
+        original_product_value = prod_dict[lt_start]
+        print(f"Original product value at start: {original_product_value}")
+        
+        # Process each date in Long Term.txt
+        for date_str, current_sprint_value in lt_entries:
+            if date_str in prod_dict:
+                # Calculate new product value using the formula:
+                # new_product_value = original_product_value - (sprint_start_value - current_sprint_value)
+                sprint_change = sprint_start_value - current_sprint_value
+                new_product_value = original_product_value - sprint_change
+                
+                old_value = prod_dict[date_str]
+                prod_dict[date_str] = new_product_value
+                
+                print(f"Updated {date_str}: {old_value} -> {new_product_value}")
+                print(f"  Sprint: {sprint_start_value} -> {current_sprint_value} (change: {sprint_change})")
+                
+            else:
+                # Handle missing dates - use previous product value and apply the same logic
+                prev_product_value = _get_previous_product_value(prod_dict, date_str)
+                if prev_product_value == 0:
+                    # If no previous value found, use the original start value
+                    prev_product_value = original_product_value
+                
+                sprint_change = sprint_start_value - current_sprint_value
+                new_product_value = original_product_value - sprint_change
+                
+                prod_dict[date_str] = new_product_value
+                print(f"Added {date_str}: {new_product_value} (based on start: {original_product_value})")
+                print(f"  Sprint: {sprint_start_value} -> {current_sprint_value} (change: {sprint_change})")
+        
+        # Convert back to list of tuples and sort by date
+        updated_entries = [(date_str, value) for date_str, value in prod_dict.items()]
+        updated_entries.sort(key=lambda x: x[0])
+        
+        # Write updated data back to file
+        _write_product_file(productData + ".txt", updated_entries, prod_start)
+        print("ProductInfo.txt updated successfully based on Long Term.txt sprint changes")
+        
+    except Exception as e:
+        print(f"Error updating ProductInfo from Long Term: {e}")
+
+
+def _get_previous_product_value(prod_dict, target_date):
+    """
+    Get the value from the previous available date in ProductInfo
+    """
+    # Convert target date to datetime for comparison
+    from datetime import datetime
+    target_dt = datetime.strptime(target_date, "%Y-%m-%d")
+    
+    # Find the closest previous date
+    prev_value = 0  # Default if no previous date found
+    prev_dt = None
+    
+    for date_str, value in prod_dict.items():
+        try:
+            date_dt = datetime.strptime(date_str, "%Y-%m-%d")
+            if date_dt < target_dt:
+                if prev_dt is None or date_dt > prev_dt:
+                    prev_dt = date_dt
+                    prev_value = value
+        except ValueError:
+            continue
+    
+    return prev_value
+
+
 def ClearData():
     confirmation = input("Are you sure you want to clear all data? Type 'YES' (Case Sensitive) to confirm: ")
     if confirmation != 'YES':
@@ -317,11 +377,17 @@ LoadDataFromFile()
 CollectData()
 SaveDataToFile()
 
+# Always update product info based on Long Term.txt after collecting data
+UpdateProductInfoFromLongTerm()
+
 if len(sys.argv) > 1 and sys.argv.__contains__("-graph"):
     ShowDataGraph()
 
 if len(sys.argv) > 1 and ("-product" in sys.argv or "-product-graph" in sys.argv):
     ShowProductGraph()
+
+if len(sys.argv) > 1 and ("-update-product" in sys.argv or "-update" in sys.argv):
+    UpdateProductInfoFromLongTerm()
 
 
 
