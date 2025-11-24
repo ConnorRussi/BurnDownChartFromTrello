@@ -188,7 +188,7 @@ def ShowDataGraph(end_date=None):
     if len(dates) > 1:
         total_items = cardsLeft[0]
         # fixed recommended target date
-        end_date = datetime(2025, 11, 21)
+        end_date = datetime(2025, 12, 8)
         # draw recommended line to end_date:
         plt.plot([dates[0], end_date], [total_items, 0], linestyle='--', color='red', label='Recommended')
         try:
